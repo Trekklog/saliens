@@ -49,36 +49,31 @@ router.post('/', (req, res) => {
         const response = await fetch(steam_inventory, {method: 'GET'})
         let json = await response.json()      
 
-
         let items = []
 
-        if (json.success == 1) {
+        if (json && json.success == 1) {
             json.descriptions.forEach(element => {
                 if (element.type.includes('Sale Item')) {
                     items.push(element.icon_url)   
                 }
             });
-        } else {
-            return res.status(500).send({
-                response: 'Something went wrong'
-            })
+
+        } else{
+            return
         }
-        
+
         return items
     }
 
     findItems()
         .then(data => {
 
-            
-            // Got all Saliens Items from Steam Inventory
-            // data.forEach(element => {
-            //     Salien.create({salien_item: element}, (err, result) => {
-            //         if (err) return console.log(err);      
-            //     })   
-            // })
-
-            
+            if (!data) {
+                return res.status(400).send({
+                    response: 'Your Steam Inventory cannot be received. Set your inventory to public then try again.'
+                })
+            } 
+          
             // Salien.find({'salien_item.icon_url': {$in: data}}) > Search for multiple elements
 
 
@@ -111,7 +106,11 @@ router.post('/', (req, res) => {
                         all_items: item.length
                     })
             })
-        }).catch(err => console.log(err))
+        }).catch(err => {
+            return res.send({
+                response: 'Something went wrong!'
+            })
+        })
 })
 
 module.exports = router;
