@@ -17,9 +17,8 @@
         </form>
       </div>
 
-
        <div class="info">
-        
+
           <div v-if="loading" class="loading">
             <img class="loading_img" src="@/assets/Planet42.png" alt="">
           </div>
@@ -27,7 +26,7 @@
           <div v-if="!loading">
             <p v-if="items_amount">You own {{ items_owned }} / {{ items_amount }} items</p>
           </div>
-          
+
         </div>
 
       <div class="search">
@@ -48,7 +47,6 @@
 </div>
       </div>
 
-
     </div>
 
     <div class="items">
@@ -68,82 +66,80 @@
 </template>
 
 <script>
-  export default {
-    name: 'Saliens',
+export default {
+  name: 'Saliens',
 
-    data() {
-      return {
-        img_url: "https://steamcommunity-a.akamaihd.net/economy/image/",
-        market_url: 'https://steamcommunity.com/market/listings/753/',
+  data () {
+    return {
+      img_url: 'https://steamcommunity-a.akamaihd.net/economy/image/',
+      market_url: 'https://steamcommunity.com/market/listings/753/',
 
-        saliens: [],
-        user: '',
-        items_owned: '',
-        items_amount: '',
-        item_searched: '',
-        hide: {
-          items_owned: false,
-          items_uncollected: false
-        },
-
-        error: null,
-        loading: false
-      }
-    },
-
-    computed:{
-        search_item(){
-        let arr = this.saliens
-
-        let items = arr.filter(el => {
-          return el.element.salien_item.market_name.toLowerCase().includes(this.item_searched.toLowerCase().trim())      
-        })
-   
-        if (this.hide.items_owned && this.hide.items_uncollected) {
-          return []
-        }if (this.hide.items_owned) {
-          return items.filter(el => {                 
-              return !el.owned
-          })  
-        }if (this.hide.items_uncollected) {      
-          return items.filter(el => {
-              return el.owned
-          })    
-        }else{
-          return items
-        }
-
+      saliens: [],
+      user: '',
+      items_owned: '',
+      items_amount: '',
+      item_searched: '',
+      hide: {
+        items_owned: false,
+        items_uncollected: false
       },
-    },
 
-    methods: {
-      check_items() {
-        this.error = ''
-        this.loading = true
-        this.$http.post('http://206.189.198.86:3000/inv', {
-          user_id: this.user
-        }).then(result => {
-          let data = result.body
-          this.loading = false
-          this.saliens = data.item
-          this.items_owned = data.items_owned
-          this.items_amount = data.all_items
+      error: null,
+      loading: false
+    }
+  },
 
-        }).catch(err => {
-          this.loading = false        
-          if (err.body) {
-            this.error = err.body.response
-          }
-        }) 
+  computed: {
+    search_item () {
+      let arr = this.saliens
+
+      let items = arr.filter(el => {
+        return el.element.salien_item.market_name.toLowerCase().includes(this.item_searched.toLowerCase().trim())
+      })
+
+      if (this.hide.items_owned && this.hide.items_uncollected) {
+        return []
+      } if (this.hide.items_owned) {
+        return items.filter(el => {
+          return !el.owned
+        })
+      } if (this.hide.items_uncollected) {
+        return items.filter(el => {
+          return el.owned
+        })
+      } else {
+        return items
       }
-    },
+    }
+  },
 
-    created() {
-      this.$http.get('http://206.189.198.86:3000/inv').then(response => {
-        this.saliens = response.body.item 
+  methods: {
+    check_items () {
+      this.error = ''
+      this.loading = true
+      this.$http.post('http://localhost:3000/inv', {
+        user_id: this.user
+      }).then(result => {   
+        let data = result.body
+        this.loading = false
+        this.saliens = data.item
+        this.items_owned = data.items_owned
+        this.items_amount = data.all_items
+      }).catch(err => {
+        this.loading = false
+        if (err.body) {
+          this.error = err.body.response
+        }
       })
     }
+  },
+
+  created () {
+    this.$http.get('http://localhost:3000/inv').then(response => {
+      this.saliens = response.body.item
+    })
   }
+}
 
 </script>
 
@@ -174,9 +170,9 @@
   }
 
   .item_box{
-    background: rgb(13, 39, 86); 
-    height: 180px; 
-    width: 180px; 
+    background: rgb(13, 39, 86);
+    height: 180px;
+    width: 180px;
     /* border: 0px solid rgb(255, 255, 255); */
     border-radius: 30px;
     box-shadow: rgb(171, 76, 76) 3px 3px 0px 4px;
@@ -200,9 +196,9 @@
 
   .salien_item{
     background: #311D3E;
-    border-width: 6px 3px; 
-    border-style: solid; 
-    border-color: rgb(80, 62, 127) rgba(80, 62, 128, 0.8) rgba(80, 62, 127, 0.6) rgb(80, 62, 127); 
+    border-width: 6px 3px;
+    border-style: solid;
+    border-color: rgb(80, 62, 127) rgba(80, 62, 128, 0.8) rgba(80, 62, 127, 0.6) rgb(80, 62, 127);
     border-radius: 10px;
   }
 
@@ -236,7 +232,7 @@
     grid-row-gap: 2rem;
     text-align: start;
     justify-self: flex-start;
-    
+
   }
 
   .search{
@@ -324,7 +320,6 @@
       transform: rotate(360deg);
     }
   }
-
 
   @media screen and (max-width: 900px) {
   .items {
