@@ -25,6 +25,7 @@
 
           <div v-if="!loading">
             <p v-if="items_amount">You own {{ items_owned }} / {{ items_amount }} items</p>
+            <p v-if="server_error">{{ server_error }}</p>
           </div>
 
         </div>
@@ -85,6 +86,7 @@ export default {
       },
 
       error: null,
+      server_error: null,
       loading: false
     }
   },
@@ -129,6 +131,8 @@ export default {
         this.loading = false
         if (err.body) {
           this.error = err.body.response
+        } else{
+          this.server_error = 'Something went wrong while getting your items. Please try again later!'
         }
       })
     }
@@ -137,6 +141,9 @@ export default {
   created () {
     this.$http.get('http://localhost:3000/inv').then(response => {
       this.saliens = response.body.item
+    }).catch(err => {
+      this.server_error = 'Something is wrong with the server. Please try again later!'
+      
     })
   }
 }
